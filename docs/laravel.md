@@ -82,7 +82,6 @@ use Illuminate\Support\Facades\Cache;
 $this->app->bind(Psr18::class, fn () => new MyHttpClient());
 $this->app->bind(Psr16::class, fn () => Cache::store('redis'));
 ```
-```
 
 ## Custom Clients & Caching
 
@@ -94,3 +93,101 @@ $this->app->bind(CacheInterface::class, fn () => Cache::store('redis')->getRepos
 ```
 
 Set `SCHOLARLY_LOG_CHANNEL` to reuse an application log channel.
+
+## Advanced Configuration
+
+### Custom HTTP Client
+
+```php
+// In a service provider
+use Psr\Http\Client\ClientInterface;
+use Symfony\Component\HttpClient\Psr18Client;
+
+public function register()
+{
+    $this->app->bind(ClientInterface::class, function() {
+        return new Psr18Client(HttpClient::create([
+            'timeout' => 60,
+            'headers' => ['User-Agent' => 'MyApp/1.0'],
+        ]));
+    });
+}
+```
+
+
+### Redis Caching Setup
+```php
+// config/scholarly.php
+return [
+    'cache_store' => 'redis',
+    'cache_ttl' => [
+        'metadata' => 3600, // 1 hour for works/authors
+        'search' => 900, // 15 minutes for search results
+        'graph' => 7200, // 2 hours for graph data
+    ],
+];
+```
+
+### Queue Integration
+```php
+use Scholarly\Laravel\Facades\Scholarly;
+
+// In a queued job
+class BuildCitationGraphJob implements ShouldQueue
+{
+    public function handle()
+    {
+        $exporter = Scholarly::graphExporter();
+        $graph = $exporter->buildWorkCitationGraph(
+            $this->workIds,
+            Query::from(['limit' => 200])
+        );
+        // Process the graph...
+    }
+}
+```
+
+### Testing with Package
+```php
+// tests/Feature/ScholarlyTest.php
+use Scholarly\Laravel\Facades\Scholarly;
+
+class ScholarlyTest extends TestCase
+{
+    public function test_can_search_works()
+    {
+        $results = Scholarly::adapter('openalex')
+            ->searchWorks(Query::from(['q' => 'test']));
+        $this->assertInstanceOf(Paginator::class, $results);
+    }
+}
+```
+
+## Production Deployment
+
+### Performance Considerations
+- Enable **Redis caching** for production workloads
+- Use **queue workers** for graph building operations
+- Configure **rate limiting** to respect provider policies
+- Monitor **memory usage** during large batch operations
+
+### Monitoring & Logging
+```php
+// Custom logger for scholarly operations
+Log::channel('scholarly')->info('Graph export completed', [
+    'nodes' => $graph->nodeCount(),
+    'edges' => $graph->edgeCount(),
+    'duration' => $exportTime
+]);
+```
+
+---
+
+## Related Documentation
+
+**Core Concepts**: [Contracts](contracts.md) | [Architecture](architecture.md) | [Getting Started](getting-started.md)
+**Features**: [Graph Analytics](graph.md) | [Laravel Integration](laravel.md) | [Provider Adapters](providers.md)
+**Development**: [Extending](extending.md) | [GitHub Repository](https://github.com/mbsoft31/scholarly-providers)
+
+**External Resources**: [OpenAlex API](https://docs.openalex.org/) | [Semantic Scholar API](https://api.semanticscholar.org/) | [Crossref API](https://github.com/CrossRef/rest-api-doc)
+

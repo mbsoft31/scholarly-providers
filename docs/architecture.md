@@ -35,4 +35,14 @@ Scholarly Providers is organised into layered modules that build on shared contr
 - Configuration objects inside `Factory\Config` isolate adapter-specific settings and are serializable from arrays/Laravel config.
 - Graph exporter accepts any `ScholarlyDataSource`, making it easy to plug in additional adapters without modifying exporter internals.
 
-For detailed provider capabilities and tips, see `docs/providers.md`.
+For detailed provider capabilities and tips, see [Provider Capabilities](providers).
+
+---
+
+## Related Documentation
+
+**Core Concepts**: [Contracts](contracts) | [Architecture](architecture) | [Getting Started](getting-started)
+**Features**: [Graph Analytics](graph) | [Laravel Integration](laravel) | [Provider Adapters](providers)
+**Development**: [Extending](extending.md) | [GitHub Repository](https://github.com/mbsoft31/scholarly-providers)
+
+**External Resources**: [OpenAlex API](https://docs.openalex.org/) | [Semantic Scholar API](https://api.semanticscholar.org/) | [Crossref API](https://github.com/CrossRef/rest-api-doc)

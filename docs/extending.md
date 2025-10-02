@@ -118,3 +118,13 @@ Tips
 - Reuse traits in `src/Adapters/Traits` for DOI/arXiv/PMID/ORCID lookups.
 - Consider adding health checks using a lightweight, cacheable endpoint.
 - Normalize aggressively; it pays off when exporting graphs or mixing providers.
+
+---
+
+## Related Documentation
+
+**Core Concepts**: [Contracts](contracts.md) | [Architecture](architecture.md) | [Getting Started](getting-started.md)
+**Features**: [Graph Analytics](graph.md) | [Laravel Integration](laravel.md) | [Provider Adapters](providers.md)
+**Development**: [Extending](extending.md) | [GitHub Repository](https://github.com/mbsoft31/scholarly-providers)
+
+**External Resources**: [OpenAlex API](https://docs.openalex.org/) | [Semantic Scholar API](https://api.semanticscholar.org/) | [Crossref API](https://github.com/CrossRef/rest-api-doc)
