@@ -130,4 +130,3 @@ final readonly class CrossrefPaginator implements Paginator
         return ! array_is_list($value);
     }
 }
-

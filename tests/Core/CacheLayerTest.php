@@ -81,7 +81,7 @@ final class ArrayCache implements CacheInterface
 }
 
 it('remembers values and caches subsequent calls', function () {
-    $cache = new CacheLayer(new ArrayCache());
+    $cache   = new CacheLayer(new ArrayCache());
     $counter = 0;
 
     $value = $cache->remember('foo', function () use (&$counter) {

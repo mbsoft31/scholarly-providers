@@ -7,10 +7,10 @@ use Scholarly\Contracts\Query;
 use Scholarly\Contracts\ScholarlyDataSource;
 use Scholarly\Exporter\Graph\GraphExporter;
 
-final class ArrayPaginatorStub implements Paginator
+final readonly class ArrayPaginatorStub implements Paginator
 {
     /** @param list<array<string, mixed>> $items */
-    public function __construct(private readonly array $items)
+    public function __construct(private array $items)
     {
     }
 
@@ -33,7 +33,7 @@ final class ArrayPaginatorStub implements Paginator
     }
 }
 
-final class FakeDataSource implements ScholarlyDataSource
+final readonly class FakeDataSource implements ScholarlyDataSource
 {
     /**
      * @param array<string, array<string, mixed>>              $works
@@ -42,10 +42,10 @@ final class FakeDataSource implements ScholarlyDataSource
      * @param array<string, array<string, mixed>>              $authors
      */
     public function __construct(
-        private readonly array $works,
-        private readonly array $references = [],
-        private readonly array $citations = [],
-        private readonly array $authors = [],
+        private array $works,
+        private array $references = [],
+        private array $citations = [],
+        private array $authors = [],
     ) {
     }
 
@@ -157,14 +157,14 @@ final class FakeDataSource implements ScholarlyDataSource
 it('builds a citation graph with edges for references and citations', function () {
     $works = [
         'openalex:W1' => [
-            'id' => 'openalex:W1',
-            'title' => 'Paper 1',
-            'authors' => [],
+            'id'           => 'openalex:W1',
+            'title'        => 'Paper 1',
+            'authors'      => [],
             'external_ids' => ['doi' => '10.1/1'],
         ],
         'openalex:W2' => [
-            'id' => 'openalex:W2',
-            'title' => 'Paper 2',
+            'id'      => 'openalex:W2',
+            'title'   => 'Paper 2',
             'authors' => [],
         ],
     ];
@@ -182,7 +182,7 @@ it('builds a citation graph with edges for references and citations', function (
     ];
 
     $dataSource = new FakeDataSource($works, $references, $citations);
-    $exporter = new GraphExporter($dataSource);
+    $exporter   = new GraphExporter($dataSource);
 
     $graph = $exporter->buildWorkCitationGraph(['openalex:W1'], Query::from(['limit' => 10]));
 
@@ -198,8 +198,8 @@ it('builds a citation graph with edges for references and citations', function (
 it('builds author collaboration graph with weighted edges', function () {
     $works = [
         'openalex:W1' => [
-            'id' => 'openalex:W1',
-            'title' => 'Joint Work',
+            'id'      => 'openalex:W1',
+            'title'   => 'Joint Work',
             'authors' => [
                 ['id' => 'openalex:A1', 'name' => 'Ada'],
                 ['id' => 'openalex:A2', 'name' => 'Grace'],
@@ -213,7 +213,7 @@ it('builds author collaboration graph with weighted edges', function () {
     ];
 
     $dataSource = new FakeDataSource($works, authors: $authors);
-    $exporter = new GraphExporter($dataSource);
+    $exporter   = new GraphExporter($dataSource);
 
     $query = Query::from([
         'raw' => ['work_ids' => ['openalex:W1']],

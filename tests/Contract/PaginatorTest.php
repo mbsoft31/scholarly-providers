@@ -45,4 +45,3 @@ it('iterates over all items lazily', function () {
         ->and($items[1]['id'])->toBe(2)
         ->and($items[2]['id'])->toBe(3);
 });
-
