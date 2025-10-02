@@ -324,23 +324,21 @@ class Normalizer
         $normalized = [];
 
         foreach ($authors as $author) {
-            if (! is_array($author)) {
-                continue;
+            if (is_array($author)) {
+                $nameParts = array_filter([
+                    $author['given'] ?? null,
+                    $author['family'] ?? null,
+                ], static fn($part) => is_string($part) && trim($part) !== '');
+
+                $orcid = isset($author['ORCID']) ? Identity::normalizeOrcid((string)$author['ORCID']) : null;
+
+                $normalized[] = [
+                    'id' => $orcid ? Identity::ns('orcid', $orcid) : null,
+                    'name' => $nameParts !== [] ? implode(' ', $nameParts) : ($author['name'] ?? null),
+                    'orcid' => $orcid,
+                    'affiliations' => self::extractAffiliations($author['affiliation'] ?? []),
+                ];
             }
-
-            $nameParts = array_filter([
-                $author['given']  ?? null,
-                $author['family'] ?? null,
-            ], static fn ($part) => is_string($part) && trim($part) !== '');
-
-            $orcid = isset($author['ORCID']) ? Identity::normalizeOrcid((string) $author['ORCID']) : null;
-
-            $normalized[] = [
-                'id'           => $orcid ? Identity::ns('orcid', $orcid) : null,
-                'name'         => $nameParts !== [] ? implode(' ', $nameParts) : ($author['name'] ?? null),
-                'orcid'        => $orcid,
-                'affiliations' => self::extractAffiliations($author['affiliation'] ?? []),
-            ];
         }
 
         return $normalized;
@@ -560,12 +558,10 @@ class Normalizer
         $trimmed = trim($value);
 
         foreach ($prefixes as $prefix) {
-            if ($prefix === '') {
-                continue;
-            }
-
-            if (stripos($trimmed, $prefix) === 0) {
-                return substr($trimmed, strlen($prefix));
+            if ($prefix !== '') {
+                if (stripos($trimmed, $prefix) === 0) {
+                    return substr($trimmed, strlen($prefix));
+                }
             }
         }
 
