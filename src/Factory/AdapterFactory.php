@@ -12,6 +12,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
@@ -54,6 +55,8 @@ final class AdapterFactory
     }
 
     /**
+     * @param array<string, mixed> $config
+     *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
@@ -167,12 +170,12 @@ final class AdapterFactory
 
         $logger = self::resolveLogger($httpConfig, $container);
 
-        $policy = static function ($request) use ($httpConfig) {
-            if ($httpConfig->timeout !== null && method_exists($request, 'withHeader')) {
+        $policy = static function (RequestInterface $request) use ($httpConfig): RequestInterface {
+            if ($httpConfig->timeout !== null) {
                 $request = $request->withHeader('timeout', (string) $httpConfig->timeout);
             }
 
-            if ($httpConfig->userAgent !== null && method_exists($request, 'withHeader')) {
+            if ($httpConfig->userAgent !== null) {
                 $request = $request->withHeader('User-Agent', $httpConfig->userAgent);
             }
 

@@ -18,10 +18,11 @@ use Psr\SimpleCache\CacheInterface;
 class CacheLayer
 {
     private bool $enabled = true;
+    private LoggerInterface $logger;
 
     public function __construct(
         private readonly CacheInterface|CacheItemPoolInterface|null $store,
-        private ?LoggerInterface                                    $logger = null,
+        ?LoggerInterface                                             $logger = null,
     ) {
         $this->logger = $logger ?? new NullLogger();
     }

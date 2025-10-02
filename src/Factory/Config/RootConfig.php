@@ -11,6 +11,9 @@ final readonly class RootConfig
     /** @var array<string, AdapterConfig> */
     public array $providers;
 
+    /**
+     * @param array<string, AdapterConfig> $providers
+     */
     public function __construct(
         public string      $defaultAdapter,
         public HttpConfig  $http,

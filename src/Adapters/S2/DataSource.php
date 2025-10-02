@@ -90,7 +90,7 @@ final class DataSource implements ScholarlyDataSource
             $this->client,
             self::BASE_URL . '/paper/search',
             $params,
-            fn (array $item): ?array => $this->normalizeWork($item),
+            fn (array $item): array => $this->normalizeWork($item),
             $response,
         );
     }
@@ -116,6 +116,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeWork($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchWorkByDoi(string $normalizedDoi): ?array
     {
         try {
@@ -131,6 +134,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeWork($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchWorkByArxiv(string $normalizedId): ?array
     {
         try {
@@ -146,6 +152,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeWork($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchWorkByPubmed(string $pmid): ?array
     {
         try {
@@ -267,7 +276,7 @@ final class DataSource implements ScholarlyDataSource
             $this->client,
             self::BASE_URL . '/author/search',
             $params,
-            fn (array $item): ?array => $this->normalizeAuthor($item),
+            fn (array $item): array => $this->normalizeAuthor($item),
             $response,
         );
     }
@@ -293,6 +302,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeAuthor($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchAuthorByOrcid(string $normalizedOrcid): ?array
     {
         try {
@@ -354,6 +366,9 @@ final class DataSource implements ScholarlyDataSource
         }
     }
 
+    /**
+     * @return array{remaining: int|null, limit: int|null, reset: int|null}
+     */
     public function rateLimitState(): array
     {
         $headers = $this->client->lastResponseHeaders();
@@ -381,6 +396,9 @@ final class DataSource implements ScholarlyDataSource
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function headers(): array
     {
         return $this->defaultHeaders;
@@ -470,11 +488,19 @@ final class DataSource implements ScholarlyDataSource
         return implode(',', $selected);
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
     private function normalizeWork(array $payload): array
     {
         return Normalizer::work($payload, 's2');
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
     private function normalizeAuthor(array $payload): array
     {
         return Normalizer::author($payload, 's2');
@@ -512,6 +538,7 @@ final class DataSource implements ScholarlyDataSource
 
     /**
      * @param list<string> $ids
+     * @return Generator<int, array<string, mixed>>
      */
     private function sendWorkBatch(array $ids, Query $query): Generator
     {
@@ -547,6 +574,7 @@ final class DataSource implements ScholarlyDataSource
 
     /**
      * @param list<string> $ids
+     * @return Generator<int, array<string, mixed>>
      */
     private function sendAuthorBatch(array $ids, Query $query): Generator
     {

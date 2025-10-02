@@ -161,6 +161,9 @@ class Identity
         return array_values(array_unique($identifiers));
     }
 
+    /**
+     * @param list<string> $segments
+     */
     private static function traverse(mixed $data, array $segments): mixed
     {
         if ($segments === []) {

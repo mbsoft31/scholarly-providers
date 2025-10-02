@@ -317,6 +317,9 @@ final class DataSource implements ScholarlyDataSource
         }
     }
 
+    /**
+     * @return array{remaining: int|null, limit: int|null, reset: int|null}
+     */
     public function rateLimitState(): array
     {
         $headers = $this->client->lastResponseHeaders();
@@ -344,16 +347,27 @@ final class DataSource implements ScholarlyDataSource
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function headers(): array
     {
         return $this->defaultHeaders;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
     private function withBaseParams(array $params = []): array
     {
         return array_merge($this->defaultQuery, $params);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
     private function withoutCursor(array $params): array
     {
         unset($params['cursor']);
@@ -392,6 +406,9 @@ final class DataSource implements ScholarlyDataSource
         return $select !== [] ? implode(',', $select) : null;
     }
 
+    /**
+     * @return list<string>
+     */
     private function buildWorkFilters(Query $query): array
     {
         $filters = [];
@@ -414,6 +431,9 @@ final class DataSource implements ScholarlyDataSource
         return array_values(array_filter($filters));
     }
 
+    /**
+     * @return list<string>
+     */
     private function parseYearFilter(string $value): array
     {
         $value = trim($value);
@@ -446,6 +466,10 @@ final class DataSource implements ScholarlyDataSource
         return $filters;
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
     private function normalizeWork(array $payload): array
     {
         return Normalizer::work($payload, 'crossref');
@@ -472,6 +496,10 @@ final class DataSource implements ScholarlyDataSource
     }
 
     /**
+     * @throws Throwable
+     */
+    /**
+     * @return array<string, mixed>|null
      * @throws Throwable
      */
     private function fetchSingleByFilter(string $filter): ?array
@@ -509,5 +537,3 @@ final class DataSource implements ScholarlyDataSource
         );
     }
 }
-
-

@@ -112,7 +112,7 @@ final class DataSource implements ScholarlyDataSource
             $this->client,
             self::BASE_URL . '/works',
             $this->withoutCursor($params),
-            fn (array $item): ?array => $this->normalizeWork($item),
+            fn (array $item): array => $this->normalizeWork($item),
             $response,
         );
     }
@@ -138,6 +138,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeWork($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchWorkByDoi(string $normalizedDoi): ?array
     {
         try {
@@ -153,6 +156,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeWork($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchWorkByArxiv(string $normalizedId): ?array
     {
         try {
@@ -168,6 +174,9 @@ final class DataSource implements ScholarlyDataSource
         return $this->normalizeWork($response);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     protected function fetchWorkByPubmed(string $pmid): ?array
     {
         try {
@@ -282,7 +291,7 @@ final class DataSource implements ScholarlyDataSource
             $this->client,
             self::BASE_URL . '/authors',
             $this->withoutCursor($params),
-            fn (array $item): ?array => $this->normalizeAuthor($item),
+            fn (array $item): array => $this->normalizeAuthor($item),
             $response,
         );
     }
@@ -309,6 +318,8 @@ final class DataSource implements ScholarlyDataSource
     }
 
     /**
+     * @return array<string, mixed>|null
+     *
      * @throws Throwable
      */
     protected function fetchAuthorByOrcid(string $normalizedOrcid): ?array
@@ -363,6 +374,9 @@ final class DataSource implements ScholarlyDataSource
         }
     }
 
+    /**
+     * @return array{remaining: int|null, limit: int|null, reset: int|null}
+     */
     public function rateLimitState(): array
     {
         $headers = $this->client->lastResponseHeaders();
@@ -391,7 +405,8 @@ final class DataSource implements ScholarlyDataSource
     }
 
     /**
-     * @return array<string, string>
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
      */
     private function withBaseParams(array $params = []): array
     {
@@ -399,7 +414,8 @@ final class DataSource implements ScholarlyDataSource
     }
 
     /**
-     * @return array<string, string>
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
      */
     private function withoutCursor(array $params): array
     {
@@ -469,6 +485,9 @@ final class DataSource implements ScholarlyDataSource
         return $select !== [] ? implode(',', $select) : null;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function withSelectForWorks(): array
     {
         $select = $this->selectForWorks(new Query());
@@ -476,6 +495,9 @@ final class DataSource implements ScholarlyDataSource
         return $select ? $this->withBaseParams(['select' => $select]) : $this->withBaseParams();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function withSelectForAuthors(): array
     {
         $select = $this->selectForAuthors();
@@ -483,6 +505,9 @@ final class DataSource implements ScholarlyDataSource
         return $select ? $this->withBaseParams(['select' => $select]) : $this->withBaseParams();
     }
 
+    /**
+     * @return list<string>
+     */
     private function buildWorkFilters(Query $query): array
     {
         $filters = [];
@@ -515,11 +540,19 @@ final class DataSource implements ScholarlyDataSource
         return array_values(array_filter($filters));
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
     private function normalizeWork(array $payload): array
     {
         return Normalizer::work($payload, 'openalex');
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
     private function normalizeAuthor(array $payload): array
     {
         return Normalizer::author($payload, 'openalex');
@@ -578,6 +611,13 @@ final class DataSource implements ScholarlyDataSource
      * @throws Throwable
      * @throws JsonException
      */
+    /**
+     * @param list<string> $ids
+     * @return Generator<int, array<string, mixed>>
+     *
+     * @throws Throwable
+     * @throws JsonException
+     */
     private function sendWorkBatch(array $ids, Query $query): Generator
     {
         $payload = [
@@ -608,6 +648,13 @@ final class DataSource implements ScholarlyDataSource
     }
 
     /**
+     * @throws Throwable
+     * @throws JsonException
+     */
+    /**
+     * @param list<string> $ids
+     * @return Generator<int, array<string, mixed>>
+     *
      * @throws Throwable
      * @throws JsonException
      */

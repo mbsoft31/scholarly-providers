@@ -32,6 +32,7 @@ use function json_encode;
 use function max;
 use function md5;
 use function sleep;
+use function serialize;
 use function trim;
 
 final class GraphExporter
@@ -49,6 +50,8 @@ final class GraphExporter
     }
 
     /**
+     * @param list<string> $workIds
+     *
      * @throws InvalidArgumentException
      * @throws \Psr\Cache\InvalidArgumentException
      */
@@ -115,6 +118,12 @@ final class GraphExporter
         return $graph;
     }
 
+    /**
+     * @param list<string> $authorIds
+     *
+     * @throws InvalidArgumentException
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     public function buildAuthorCollaborationGraph(array $authorIds, Query $query, ?callable $progress = null): Graph
     {
         $graph   = new Graph(false);
@@ -137,7 +146,12 @@ final class GraphExporter
         $limit      = (int)($query->raw['max_works'] ?? 0);
 
         foreach ($works as $work) {
-            $workId  = $this->resolveWorkId($work) ?? 'work:' . md5(json_encode($work));
+            $encoded = json_encode($work);
+            if ($encoded === false) {
+                $encoded = serialize($work);
+            }
+
+            $workId  = $this->resolveWorkId($work) ?? 'work:' . md5($encoded);
             $authors = $work['authors']            ?? [];
 
             if (! is_array($authors) || $authors === []) {
@@ -257,6 +271,10 @@ final class GraphExporter
         return $this->algorithms ??= new AlgorithmsHelper();
     }
 
+    /**
+     * @param list<string> $ids
+     * @return list<string>
+     */
     private function normalizeIdentifiers(array $ids): array
     {
         $normalized = [];
@@ -274,6 +292,10 @@ final class GraphExporter
         return array_values(array_unique($normalized));
     }
 
+    /**
+     * @param list<string> $ids
+     * @return array<string, array<string, mixed>>
+     */
     private function collectWorks(array $ids, Query $query): array
     {
         $works      = [];
@@ -299,6 +321,10 @@ final class GraphExporter
         return $works;
     }
 
+    /**
+     * @param list<string> $ids
+     * @return array<string, array<string, mixed>>
+     */
     private function collectAuthors(array $ids, Query $query): array
     {
         $authors    = [];
@@ -324,6 +350,9 @@ final class GraphExporter
         return $authors;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     private function safeGetWork(string $id, Query $query): ?array
     {
         try {
@@ -344,6 +373,8 @@ final class GraphExporter
     }
 
     /**
+     * @return list<array<string, mixed>>
+     *
      * @throws InvalidArgumentException
      * @throws \Psr\Cache\InvalidArgumentException
      */
@@ -371,6 +402,8 @@ final class GraphExporter
     }
 
     /**
+     * @return list<array<string, mixed>>
+     *
      * @throws InvalidArgumentException
      * @throws \Psr\Cache\InvalidArgumentException
      */
@@ -397,6 +430,9 @@ final class GraphExporter
         return $this->remember($key, $resolver);
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $bucket
+     */
     private function collectFromPaginator(Paginator $paginator, array &$bucket): void
     {
         foreach ($paginator as $item) {
@@ -413,6 +449,9 @@ final class GraphExporter
         }
     }
 
+    /**
+     * @param array<string, mixed> $work
+     */
     private function resolveWorkId(array $work): ?string
     {
         $id = $work['id'] ?? null;
@@ -433,6 +472,9 @@ final class GraphExporter
         return null;
     }
 
+    /**
+     * @param array<string, mixed> $work
+     */
     private function addWorkNode(Graph $graph, array $work): void
     {
         $id = $this->resolveWorkId($work);
@@ -452,6 +494,9 @@ final class GraphExporter
         $graph->addNode($id, array_filter($attrs, static fn ($value) => $value !== null));
     }
 
+    /**
+     * @param array<string, mixed> $author
+     */
     private function addAuthorNode(Graph $graph, array $author): void
     {
         $id = $author['id'] ?? null;
@@ -469,6 +514,9 @@ final class GraphExporter
         $graph->addNode(trim($id), array_filter($attrs, static fn ($value) => $value !== null));
     }
 
+    /**
+     * @param array<string, mixed> $attrs
+     */
     private function addOrIncrementEdge(Graph $graph, string $from, string $to, array $attrs = []): void
     {
         $attrs['weight'] = $attrs['weight'] ?? 1;
@@ -482,6 +530,9 @@ final class GraphExporter
     }
 
     /**
+     * @param callable(): array<array-key, mixed> $resolver
+     * @return array<array-key, mixed>
+     *
      * @throws InvalidArgumentException
      * @throws \Psr\Cache\InvalidArgumentException
      */
@@ -516,9 +567,8 @@ final class GraphExporter
         $remaining = $state['remaining'] ?? null;
         $reset     = $state['reset']     ?? null;
 
-        if (is_numeric($remaining) && (int) $remaining <= 1 && is_numeric($reset) && (int) $reset > 0) {
-            $sleep = (int) $reset;
-            $sleep = max(0, $sleep);
+        if (is_numeric($remaining) && (int) $remaining <= 1 && is_numeric($reset)) {
+            $sleep = max(0, (int) $reset);
 
             if ($sleep > 0 && $sleep <= 5) {
                 $this->logger->info('Rate limit reached – pausing graph export', ['sleep' => $sleep]);
@@ -527,6 +577,9 @@ final class GraphExporter
         }
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     private function resolveSourceWorks(Query $query): array
     {
         $works = [];

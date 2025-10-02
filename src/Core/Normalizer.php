@@ -53,6 +53,7 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeOpenAlexWork(array $raw): array
     {
@@ -190,6 +191,7 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeS2Work(array $raw): array
     {
@@ -267,6 +269,7 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeCrossrefWork(array $raw): array
     {
@@ -363,6 +366,7 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeGenericWork(array $raw, string $provider): array
     {
@@ -388,6 +392,7 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeOpenAlexAuthor(array $raw): array
     {
@@ -412,6 +417,10 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     */
+    /**
+     * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeS2Author(array $raw): array
     {
@@ -445,6 +454,10 @@ class Normalizer
     /**
      * @param array<string, mixed> $raw
      */
+    /**
+     * @param array<string, mixed> $raw
+     * @return array<string, mixed>
+     */
     private static function normalizeCrossrefAuthor(array $raw): array
     {
         $nameParts = array_filter([
@@ -466,6 +479,10 @@ class Normalizer
 
     /**
      * @param array<string, mixed> $raw
+     */
+    /**
+     * @param array<string, mixed> $raw
+     * @return array<string, mixed>
      */
     private static function normalizeGenericAuthor(array $raw, string $provider): array
     {
@@ -534,6 +551,9 @@ class Normalizer
      * @param string $value
      * @param array $prefixes
      * @return string
+     */
+    /**
+     * @param list<string> $prefixes
      */
     private static function stripPrefix(string $value, array $prefixes): string
     {

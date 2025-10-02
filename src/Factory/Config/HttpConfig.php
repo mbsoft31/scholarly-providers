@@ -6,10 +6,14 @@ namespace Scholarly\Factory\Config;
 
 final readonly class HttpConfig
 {
+    /**
+     * @param array{base?: float|int, max?: float|int, factor?: float|int} $backoff
+     */
     public function __construct(
         public ?string $client = null,
         public ?float  $timeout = null,
         public ?string $userAgent = null,
+        /** @var array{base?: float|int, max?: float|int, factor?: float|int} */
         public array   $backoff = [],
         public mixed   $logger = null,
     ) {

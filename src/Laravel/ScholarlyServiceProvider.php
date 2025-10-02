@@ -11,6 +11,7 @@ use Psr\Container\ContainerInterface;
 use Scholarly\Contracts\ScholarlyDataSource;
 use Scholarly\Exporter\Graph\GraphExporter;
 use Scholarly\Factory\AdapterFactory;
+
 use function is_array;
 
 final class ScholarlyServiceProvider extends ServiceProvider
@@ -22,7 +23,7 @@ final class ScholarlyServiceProvider extends ServiceProvider
         $this->app->singleton(AdapterFactory::class, function (Container $app): AdapterFactory {
             /** @var Repository $configRepo */
             $configRepo = $app->make('config');
-            $config = $configRepo->get('scholarly', []);
+            $config     = $configRepo->get('scholarly', []);
 
             return AdapterFactory::make(is_array($config) ? $config : [], $this->psrContainer($app));
         });
@@ -53,24 +54,6 @@ final class ScholarlyServiceProvider extends ServiceProvider
 
     private function psrContainer(Container $app): ContainerInterface
     {
-        if ($app instanceof ContainerInterface) {
-            return $app;
-        }
-
-        return new class ($app) implements ContainerInterface {
-            public function __construct(private Container $app)
-            {
-            }
-
-            public function get(string $id): mixed
-            {
-                return $this->app->make($id);
-            }
-
-            public function has(string $id): bool
-            {
-                return $this->app->bound($id);
-            }
-        };
+        return $app;
     }
 }

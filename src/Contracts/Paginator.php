@@ -9,6 +9,8 @@ use Traversable;
 
 /**
  * Contract for lazy paginated collections provided by adapters.
+ *
+ * @extends IteratorAggregate<int, array<string, mixed>>
  */
 interface Paginator extends IteratorAggregate
 {
@@ -22,7 +24,7 @@ interface Paginator extends IteratorAggregate
     /**
      * Iterate over each item in the paginated collection.
      *
-     * @return Traversable<array<string, mixed>>
+     * @return Traversable<int, array<string, mixed>>
      */
     public function getIterator(): Traversable;
 }

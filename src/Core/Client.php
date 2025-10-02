@@ -135,6 +135,9 @@ class Client
         return $this->lastResponseHeaders;
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function log(string $message, array $context = []): void
     {
         $this->logger->info($message, $context);
@@ -201,11 +204,11 @@ class Client
             }
         }
 
-        if ($lastException instanceof Throwable) {
-            throw $lastException;
+        if (! $lastException instanceof Throwable) {
+            throw new DefaultException('Request failed after retries.');
         }
 
-        throw new DefaultException('Request failed after retries.');
+        throw $lastException;
     }
 
     /**
@@ -280,6 +283,9 @@ class Client
         )->__toString();
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     private function decodeResponse(ResponseInterface $response): array
     {
         $body = (string) $response->getBody();

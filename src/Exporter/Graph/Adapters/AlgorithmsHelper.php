@@ -12,6 +12,9 @@ use Mbsoft\Graph\Contracts\GraphInterface;
 
 final class AlgorithmsHelper
 {
+    /**
+     * @return array<string, float>
+     */
     public function pageRank(
         GraphInterface $graph,
         float $dampingFactor = 0.85,
@@ -23,6 +26,9 @@ final class AlgorithmsHelper
         return $algorithm->compute($graph);
     }
 
+    /**
+     * @return array<string, float>
+     */
     public function betweenness(GraphInterface $graph, bool $normalized = true): array
     {
         $algorithm = new Betweenness($normalized);
@@ -30,6 +36,9 @@ final class AlgorithmsHelper
         return $algorithm->compute($graph);
     }
 
+    /**
+     * @return list<list<string>>
+     */
     public function connectedComponents(GraphInterface $graph): array
     {
         $algorithm = new Connected();
@@ -37,6 +46,9 @@ final class AlgorithmsHelper
         return $algorithm->findComponents($graph);
     }
 
+    /**
+     * @return list<list<string>>
+     */
     public function stronglyConnectedComponents(GraphInterface $graph): array
     {
         $algorithm = new StronglyConnected();
