@@ -68,12 +68,6 @@
       "@test",
       "@stan",
       "@cs-check"
-    ],
-    "post-install-cmd": [
-      "@php build/scripts/post-install.php"
-    ],
-    "post-update-cmd": [
-      "@php build/scripts/post-install.php"
     ]
   },
   "config": {
@@ -85,6 +79,5 @@
     }
   },
   "minimum-stability": "stable",
-  "prefer-stable": true,
-  "version": "1.0.0"
+  "prefer-stable": true
 }
