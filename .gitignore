@@ -1,0 +1,11 @@
+vendor/
+composer.lock
+.env
+.idea/
+coverage/
+build/
+logs/
+.phpunit.result.cache
+phpunit.xml.cache
+.php-cs-fixer.cache
+pest.cache
