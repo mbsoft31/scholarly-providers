@@ -3,8 +3,23 @@
   "description": "Unified PHP SDK for scholarly data providers with adapters, caching, and graph exporter.",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://github.com/mbsoft31/scholarly-providers",
+  "support": {
+    "issues": "https://github.com/mbsoft31/scholarly-providers/issues",
+    "source": "https://github.com/mbsoft31/scholarly-providers"
+  },
+  "keywords": [
+    "scholarly",
+    "openalex",
+    "crossref",
+    "semantic scholar",
+    "citation",
+    "graph",
+    "laravel",
+    "sdk"
+  ],
   "require": {
-    "php": "^8.2",
+    "php": "^8.3",
     "psr/http-client": "^1.0",
     "psr/http-factory": "^1.0",
     "psr/http-message": "^1.1",

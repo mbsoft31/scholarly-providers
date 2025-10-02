@@ -3,7 +3,7 @@
 [![PHP Version](https://img.shields.io/badge/php-%5E8.3-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/scholarly/providers.svg?style=flat-square)](https://packagist.org/packages/scholarly/providers)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/scholarly/providers/ci.yml?branch=main&style=flat-square)](https://github.com/scholarly/providers/actions)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/mbsoft31/scholarly-providers/ci.yml?branch=main&style=flat-square)](https://github.com/mbsoft31/scholarly-providers/actions)
 [![Total Downloads](https://img.shields.io/packagist/dt/scholarly/providers.svg?style=flat-square)](https://packagist.org/packages/scholarly/providers)
 
 Unified PHP SDK for scholarly data providers (OpenAlex, Semantic Scholar, Crossref) with a clean contracts layer, robust HTTP client with retries and caching, and a graph exporter powered by mbsoft/graph-core and mbsoft/graph-algorithms.
