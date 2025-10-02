@@ -16,6 +16,13 @@ Scholarly Providers is organised into layered modules that build on shared contr
 3. Provider responses are transformed by `Core\Normalizer` into canonical arrays shared across adapters.
 4. Higher-level modules (tests, exporter, Laravel services) operate on the normalized contract with no provider-specific branching.
 
+### Why this architecture beats raw HTTP
+- One interface, many providers: swap adapters without rewriting business logic.
+- Failure safety: HTTP jitter + retry-after compliance reduces flakiness.
+- Consistent payloads: normalization avoids brittle conditional parsing.
+- Caching: PSR-6/16 pluggable caching at the request and graph layers.
+- Extensible: add adapters by implementing one interface and reusing client/paginator patterns.
+
 ## Extensibility
 
 - New providers implement `ScholarlyDataSource` and reuse `Core\Client`, `CacheLayer`, `Normalizer`, and shared traits.

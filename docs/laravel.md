@@ -64,6 +64,18 @@ The graph exporter is bound for convenience:
 
 ```php
 $graph = Scholarly::graphExporter()->buildWorkCitationGraph(['openalex:W123'], Query::from(['limit' => 50]));
+
+### Overriding PSR dependencies
+Bind your own PSR-18 client, PSR-17 factories, cache store, or logger to integrate platform choices like Symfony HttpClient or Redis caching.
+
+```php
+use Psr\Http\Client\ClientInterface as Psr18;
+use Psr\SimpleCache\CacheInterface as Psr16;
+use Illuminate\Support\Facades\Cache;
+
+$this->app->bind(Psr18::class, fn () => new MyHttpClient());
+$this->app->bind(Psr16::class, fn () => Cache::store('redis'));
+```
 ```
 
 ## Custom Clients & Caching
