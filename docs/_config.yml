@@ -1,5 +1,5 @@
 title: Scholarly Providers
-description: Unified SDK for OpenAlex, Semantic Scholar, and Crossref with graph export
+description: Unified SDK for OpenAlex, Semantic Scholar, and Crossref with graph export.
 theme: minima
 markdown: kramdown
 highlighter: rouge
