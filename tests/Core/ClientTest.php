@@ -98,7 +98,7 @@ it('honours retry-after headers when rate limited', function (): void {
         $psr17->createResponse(200)->withBody($psr17->createStream('{"ok":true}'))
     );
 
-    $sleeps = [];
+    $sleeps  = [];
     $backoff = new Backoff(
         baseDelay: 0.1,
         maxDelay: 1.0,

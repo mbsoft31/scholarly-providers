@@ -41,14 +41,14 @@ it('paginates S2 works and retrieves citations and references', function (): voi
     $firstPage = [
         'data' => [
             [
-                'paperId'        => 'W1',
-                'title'          => 'First Paper',
-                'year'           => 2022,
-                'venue'          => 'Venue A',
-                'externalIds'    => ['DOI' => '10.1000/w1'],
-                'authors'        => [['authorId' => 'A1', 'name' => 'Alice']],
-                'isOpenAccess'   => true,
-                'openAccessPdf'  => ['url' => 'https://example.com/pdf'],
+                'paperId'       => 'W1',
+                'title'         => 'First Paper',
+                'year'          => 2022,
+                'venue'         => 'Venue A',
+                'externalIds'   => ['DOI' => '10.1000/w1'],
+                'authors'       => [['authorId' => 'A1', 'name' => 'Alice']],
+                'isOpenAccess'  => true,
+                'openAccessPdf' => ['url' => 'https://example.com/pdf'],
             ],
         ],
         'next' => 25,
@@ -57,13 +57,13 @@ it('paginates S2 works and retrieves citations and references', function (): voi
     $secondPage = [
         'data' => [
             [
-                'paperId'        => 'W2',
-                'title'          => 'Second Paper',
-                'year'           => 2021,
-                'venue'          => 'Venue B',
-                'externalIds'    => ['DOI' => '10.1000/w2'],
-                'authors'        => [['authorId' => 'A2', 'name' => 'Bob']],
-                'isOpenAccess'   => false,
+                'paperId'      => 'W2',
+                'title'        => 'Second Paper',
+                'year'         => 2021,
+                'venue'        => 'Venue B',
+                'externalIds'  => ['DOI' => '10.1000/w2'],
+                'authors'      => [['authorId' => 'A2', 'name' => 'Bob']],
+                'isOpenAccess' => false,
             ],
         ],
         'next' => null,

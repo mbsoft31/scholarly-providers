@@ -40,13 +40,13 @@ it('normalizes S2 author payloads', function () {
 
 it('normalizes S2 work payloads including alternate fields', function (): void {
     $raw = [
-        'paperId'         => 'W500',
-        'title'           => 'S2 Title',
-        'abstractText'    => 'Fallback abstract',
-        'externalIds'     => ['DOI' => '10.5555/s2', 'ArXiv' => '2101.12345v3'],
-        'publicationVenue'=> ['id' => 'V1', 'name' => 'Venue', 'type' => 'journal'],
-        'openAccessPdf'   => ['url' => 'https://example.com/pdf'],
-        'isOpenAccess'    => true,
+        'paperId'          => 'W500',
+        'title'            => 'S2 Title',
+        'abstractText'     => 'Fallback abstract',
+        'externalIds'      => ['DOI' => '10.5555/s2', 'ArXiv' => '2101.12345v3'],
+        'publicationVenue' => ['id' => 'V1', 'name' => 'Venue', 'type' => 'journal'],
+        'openAccessPdf'    => ['url' => 'https://example.com/pdf'],
+        'isOpenAccess'     => true,
     ];
 
     $normalized = Normalizer::work($raw, 's2');
@@ -76,9 +76,9 @@ it('normalizes Crossref work payloads', function () {
 
 it('reconstructs abstract text from OpenAlex inverted index', function (): void {
     $raw = [
-        'id'                     => 'https://openalex.org/W9',
-        'display_name'           => 'Abstract Example',
-        'abstract_inverted_index'=> [
+        'id'                      => 'https://openalex.org/W9',
+        'display_name'            => 'Abstract Example',
+        'abstract_inverted_index' => [
             'hello' => [0],
             'world' => [1],
         ],
@@ -90,7 +90,7 @@ it('reconstructs abstract text from OpenAlex inverted index', function (): void 
 });
 
 it('falls back to generic work and author normalization', function (): void {
-    $work = Normalizer::work(['id' => '123', 'title' => 'Generic'], 'unknown');
+    $work   = Normalizer::work(['id' => '123', 'title' => 'Generic'], 'unknown');
     $author = Normalizer::author(['name' => 'Unknown'], 'unknown');
 
     expect($work['id'])->toBe('unknown:123')

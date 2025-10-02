@@ -11,9 +11,9 @@ it('computes centrality metrics for directed graphs', function (): void {
     $graph->addEdge('b', 'c');
     $graph->addEdge('c', 'a');
 
-    $helper = new AlgorithmsHelper();
+    $helper   = new AlgorithmsHelper();
     $pageRank = $helper->pageRank($graph);
-    $between = $helper->betweenness($graph, false);
+    $between  = $helper->betweenness($graph, false);
 
     expect($pageRank)
         ->toHaveKeys(['a', 'b', 'c'])
@@ -21,7 +21,7 @@ it('computes centrality metrics for directed graphs', function (): void {
 
     expect($between)->toBeArray();
 
-    $strong = $helper->stronglyConnectedComponents($graph);
+    $strong     = $helper->stronglyConnectedComponents($graph);
     $normalized = array_map(static function (array $component): string {
         sort($component);
         return implode(',', $component);
@@ -36,7 +36,7 @@ it('finds connected components in undirected graphs', function (): void {
     $graph->addEdge('n1', 'n2');
     $graph->addNode('isolated');
 
-    $helper = new AlgorithmsHelper();
+    $helper     = new AlgorithmsHelper();
     $components = $helper->connectedComponents($graph);
 
     expect($components)->toBeArray()->toBeEmpty();

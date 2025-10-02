@@ -25,13 +25,13 @@ it('registers Laravel bindings for scholarly services', function (): void {
     $container = new Container();
     $container->instance('config', new Repository([
         'scholarly' => [
-            'default' => 'openalex',
-            'http' => [],
-            'cache' => ['store' => null],
-            'graph' => [],
+            'default'   => 'openalex',
+            'http'      => [],
+            'cache'     => ['store' => null],
+            'graph'     => [],
             'providers' => [
                 'openalex' => ['mailto' => 'team@example.com'],
-                's2' => ['api_key' => 'secret'],
+                's2'       => ['api_key' => 'secret'],
                 'crossref' => ['mailto' => 'team@example.com'],
             ],
         ],

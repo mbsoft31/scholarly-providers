@@ -43,16 +43,16 @@ it('builds filters and paginates crossref works', function (): void {
 
     $firstPage = [
         'message' => [
-            'items'       => [
+            'items' => [
                 [
-                    'DOI'                => '10.1000/alpha',
-                    'title'              => ['First Work'],
-                    'issued'             => ['date-parts' => [[2021, 6, 15]]],
-                    'container-title'    => ['Journal A'],
-                    'type'               => 'journal-article',
+                    'DOI'                    => '10.1000/alpha',
+                    'title'                  => ['First Work'],
+                    'issued'                 => ['date-parts' => [[2021, 6, 15]]],
+                    'container-title'        => ['Journal A'],
+                    'type'                   => 'journal-article',
                     'is-referenced-by-count' => 5,
-                    'references-count'   => 2,
-                    'author'             => [
+                    'references-count'       => 2,
+                    'author'                 => [
                         ['given' => 'Ada', 'family' => 'Lovelace'],
                     ],
                 ],
@@ -63,16 +63,16 @@ it('builds filters and paginates crossref works', function (): void {
 
     $secondPage = [
         'message' => [
-            'items'       => [
+            'items' => [
                 [
-                    'DOI'                => '10.1000/beta',
-                    'title'              => ['Second Work'],
-                    'issued'             => ['date-parts' => [[2020, 1, 1]]],
-                    'container-title'    => ['Journal B'],
-                    'type'               => 'journal-article',
+                    'DOI'                    => '10.1000/beta',
+                    'title'                  => ['Second Work'],
+                    'issued'                 => ['date-parts' => [[2020, 1, 1]]],
+                    'container-title'        => ['Journal B'],
+                    'type'                   => 'journal-article',
                     'is-referenced-by-count' => 3,
-                    'references-count'   => 1,
-                    'author'             => [
+                    'references-count'       => 1,
+                    'author'                 => [
                         ['given' => 'Grace', 'family' => 'Hopper'],
                     ],
                 ],
@@ -138,13 +138,13 @@ it('lists citations for a DOI using crossref paginator', function (): void {
 
     $firstPage = [
         'message' => [
-            'items'       => [
+            'items' => [
                 [
-                    'DOI'      => '10.1000/gamma',
-                    'title'    => ['Gamma Work'],
-                    'issued'   => ['date-parts' => [[2019, 3, 12]]],
-                    'author'   => [['given' => 'Alan', 'family' => 'Turing']],
-                    'type'     => 'journal-article',
+                    'DOI'    => '10.1000/gamma',
+                    'title'  => ['Gamma Work'],
+                    'issued' => ['date-parts' => [[2019, 3, 12]]],
+                    'author' => [['given' => 'Alan', 'family' => 'Turing']],
+                    'type'   => 'journal-article',
                 ],
             ],
             'next-cursor' => null,
@@ -172,8 +172,8 @@ it('lists citations for a DOI using crossref paginator', function (): void {
 });
 
 it('returns empty items when listing citations with invalid identifier', function (): void {
-    $psr17 = new Psr17Factory();
-    $http  = new MockHttpClient();
+    $psr17  = new Psr17Factory();
+    $http   = new MockHttpClient();
     $client = new Client($http, $psr17, $psr17, $psr17, null, new NullLogger(), new Backoff(0.0, 0.0, 1.0));
 
     $dataSource = new DataSource($client);

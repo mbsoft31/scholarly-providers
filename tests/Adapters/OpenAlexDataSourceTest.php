@@ -45,14 +45,14 @@ it('paginates openalex works with filters and field selection', function (): voi
     $firstPage = [
         'results' => [
             [
-                'id'                => 'https://openalex.org/W1',
-                'display_name'      => 'First Work',
-                'publication_year'  => 2022,
-                'host_venue'        => ['display_name' => 'Venue A', 'type' => 'journal', 'id' => 'https://openalex.org/V1'],
-                'ids'               => ['doi' => 'https://doi.org/10.1000/alpha'],
-                'cited_by_count'    => 10,
+                'id'                     => 'https://openalex.org/W1',
+                'display_name'           => 'First Work',
+                'publication_year'       => 2022,
+                'host_venue'             => ['display_name' => 'Venue A', 'type' => 'journal', 'id' => 'https://openalex.org/V1'],
+                'ids'                    => ['doi' => 'https://doi.org/10.1000/alpha'],
+                'cited_by_count'         => 10,
                 'referenced_works_count' => 2,
-                'authorships'       => [
+                'authorships'            => [
                     [
                         'author'       => ['id' => 'https://openalex.org/A1', 'display_name' => 'Alice'],
                         'institutions' => [['display_name' => 'Institute A']],
@@ -66,14 +66,14 @@ it('paginates openalex works with filters and field selection', function (): voi
     $secondPage = [
         'results' => [
             [
-                'id'                => 'https://openalex.org/W2',
-                'display_name'      => 'Second Work',
-                'publication_year'  => 2021,
-                'host_venue'        => ['display_name' => 'Venue B', 'type' => 'journal', 'id' => 'https://openalex.org/V2'],
-                'ids'               => ['doi' => 'https://doi.org/10.1000/beta'],
-                'cited_by_count'    => 5,
+                'id'                     => 'https://openalex.org/W2',
+                'display_name'           => 'Second Work',
+                'publication_year'       => 2021,
+                'host_venue'             => ['display_name' => 'Venue B', 'type' => 'journal', 'id' => 'https://openalex.org/V2'],
+                'ids'                    => ['doi' => 'https://doi.org/10.1000/beta'],
+                'cited_by_count'         => 5,
                 'referenced_works_count' => 1,
-                'authorships'       => [
+                'authorships'            => [
                     [
                         'author'       => ['id' => 'https://openalex.org/A2', 'display_name' => 'Bob'],
                         'institutions' => [['display_name' => 'Institute B']],
@@ -106,14 +106,14 @@ it('paginates openalex works with filters and field selection', function (): voi
     );
 
     $query = Query::from([
-        'q'          => 'climate',
-        'year'       => '2020',
-        'openAccess' => true,
+        'q'            => 'climate',
+        'year'         => '2020',
+        'openAccess'   => true,
         'minCitations' => 5,
-        'venueIds'   => ['https://openalex.org/V1'],
-        'fields'     => ['title', 'venue'],
-        'raw'        => ['extra' => 'value'],
-        'limit'      => 2,
+        'venueIds'     => ['https://openalex.org/V1'],
+        'fields'       => ['title', 'venue'],
+        'raw'          => ['extra' => 'value'],
+        'limit'        => 2,
     ]);
 
     $dataSource = new DataSource($client, 'mailto@example.com');
@@ -174,8 +174,8 @@ it('lists openalex citations and references for a work', function (): void {
 });
 
 it('returns empty results when OpenAlex identifier cannot be normalized', function (): void {
-    $psr17 = new Psr17Factory();
-    $http  = new MockHttpClient();
+    $psr17  = new Psr17Factory();
+    $http   = new MockHttpClient();
     $client = new Client($http, $psr17, $psr17, $psr17, null, new NullLogger(), new Backoff(0.0, 0.0, 1.0));
 
     $dataSource = new DataSource($client);

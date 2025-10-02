@@ -11,7 +11,7 @@ use Scholarly\Core\Client;
 
 it('iterates paginated author responses and exposes the current items', function (): void {
     $psr17 = new Psr17Factory();
-    $http = new MockHttpClient();
+    $http  = new MockHttpClient();
 
     $firstPage = [
         'results' => [
@@ -48,7 +48,7 @@ it('iterates paginated author responses and exposes the current items', function
         $client,
         'https://api.openalex.org/authors',
         ['cursor' => '*', 'per-page' => 2],
-        static fn(array $item): array => ['id' => $item['id'], 'name' => $item['display_name'] ?? null],
+        static fn (array $item): array => ['id' => $item['id'], 'name' => $item['display_name'] ?? null],
         $firstPage,
     );
 
@@ -56,8 +56,8 @@ it('iterates paginated author responses and exposes the current items', function
         ->toBeArray()
         ->toHaveCount(2)
         ->sequence(
-            fn($item) => $item->toHaveKey('id', 'https://openalex.org/A1'),
-            fn($item) => $item->toHaveKey('id', 'https://openalex.org/A2')
+            fn ($item) => $item->toHaveKey('id', 'https://openalex.org/A1'),
+            fn ($item) => $item->toHaveKey('id', 'https://openalex.org/A2')
         );
 
     $collected = iterator_to_array($paginator);

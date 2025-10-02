@@ -43,4 +43,3 @@ it('invokes custom sleeper when sleeping', function (): void {
 
     expect($sleeps)->toBe([0.75]);
 });
-

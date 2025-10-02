@@ -11,7 +11,7 @@ use Scholarly\Core\Client;
 
 it('walks through offset-based author pagination', function (): void {
     $psr17 = new Psr17Factory();
-    $http = new MockHttpClient();
+    $http  = new MockHttpClient();
 
     $firstPage = [
         'data' => [
@@ -48,15 +48,15 @@ it('walks through offset-based author pagination', function (): void {
         $client,
         'https://api.semanticscholar.org/graph/v1/author/search',
         ['limit' => 2, 'offset' => 0],
-        static fn(array $row): array => ['id' => $row['authorId'], 'name' => $row['name']],
+        static fn (array $row): array => ['id' => $row['authorId'], 'name' => $row['name']],
         $firstPage,
     );
 
     expect($paginator->items())
         ->toHaveCount(2)
         ->sequence(
-            fn($item) => $item->toMatchArray(['id' => 'A1', 'name' => 'Ada']),
-            fn($item) => $item->toMatchArray(['id' => 'A2', 'name' => 'Ben'])
+            fn ($item) => $item->toMatchArray(['id' => 'A1', 'name' => 'Ada']),
+            fn ($item) => $item->toMatchArray(['id' => 'A2', 'name' => 'Ben'])
         );
 
     $collected = iterator_to_array($paginator);
@@ -70,4 +70,3 @@ it('walks through offset-based author pagination', function (): void {
 
     expect($params['offset'] ?? null)->toBe('25');
 });
-

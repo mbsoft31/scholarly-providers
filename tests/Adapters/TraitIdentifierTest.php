@@ -12,6 +12,7 @@ use Scholarly\Adapters\Traits\PubmedTrait;
 use Scholarly\Core\Backoff;
 use Scholarly\Core\Client;
 use Scholarly\Core\Exceptions\NotFoundException;
+
 use function PHPUnit\Framework\assertIsArray;
 
 final class ArrayLogger extends AbstractLogger
@@ -27,7 +28,7 @@ final class ArrayLogger extends AbstractLogger
     public function log($level, $message, array $context = []): void
     {
         $this->entries[] = [
-            'level' => (string)$level,
+            'level'   => (string)$level,
             'message' => (string)$message,
             'context' => $context,
         ];
@@ -37,7 +38,7 @@ final class ArrayLogger extends AbstractLogger
 function makeTestClient(?ArrayLogger &$logger = null): Client
 {
     $psr17 = new Psr17Factory();
-    $http = new MockHttpClient();
+    $http  = new MockHttpClient();
     $logger ??= new ArrayLogger();
 
     return new Client(
@@ -132,7 +133,7 @@ final class FakeOrcidAdapter extends FakeTraitAdapter
 }
 
 it('normalizes DOI values before fetching', function (): void {
-    $client = makeTestClient();
+    $client  = makeTestClient();
     $adapter = new FakeDoiAdapter($client);
 
     $result = $adapter->getWorkByDoi('https://doi.org/10.1000/XYZ');
@@ -143,7 +144,7 @@ it('normalizes DOI values before fetching', function (): void {
 });
 
 it('returns null when DOI is invalid', function (): void {
-    $client = makeTestClient();
+    $client  = makeTestClient();
     $adapter = new FakeDoiAdapter($client);
 
     expect($adapter->getWorkByDoi('   '))
@@ -166,7 +167,7 @@ it('logs when DOI lookup is not found', function (): void {
 });
 
 it('normalizes arXiv identifiers', function (): void {
-    $client = makeTestClient();
+    $client  = makeTestClient();
     $adapter = new FakeArxivAdapter($client);
 
     $result = $adapter->getWorkByArxiv('arXiv:2101.12345v2');
@@ -192,7 +193,7 @@ it('logs when arXiv lookup misses', function (): void {
 });
 
 it('normalizes PubMed identifiers', function (): void {
-    $client = makeTestClient();
+    $client  = makeTestClient();
     $adapter = new FakePubmedAdapter($client);
 
     $result = $adapter->getWorkByPubmed('PMID: 123456');
@@ -218,7 +219,7 @@ it('logs when PubMed lookup is not found', function (): void {
 });
 
 it('normalizes ORCID identifiers', function (): void {
-    $client = makeTestClient();
+    $client  = makeTestClient();
     $adapter = new FakeOrcidAdapter($client);
 
     $result = $adapter->getAuthorByOrcid('https://orcid.org/0000-0001-2345-6789');

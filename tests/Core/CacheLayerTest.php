@@ -222,8 +222,8 @@ it('stores values via PSR-6 cache pools', function (): void {
     $cache   = new CacheLayer(new ArrayCachePool());
     $counter = 0;
 
-    $value  = $cache->remember('psr6', function () use (&$counter) { return ++$counter; });
-    $again  = $cache->remember('psr6', function () use (&$counter) { return ++$counter; });
+    $value = $cache->remember('psr6', function () use (&$counter) { return ++$counter; });
+    $again = $cache->remember('psr6', function () use (&$counter) { return ++$counter; });
 
     expect($value)->toBe(1)
         ->and($again)->toBe(1);
