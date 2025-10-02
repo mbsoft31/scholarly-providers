@@ -326,16 +326,16 @@ class Normalizer
         foreach ($authors as $author) {
             if (is_array($author)) {
                 $nameParts = array_filter([
-                    $author['given'] ?? null,
+                    $author['given']  ?? null,
                     $author['family'] ?? null,
-                ], static fn($part) => is_string($part) && trim($part) !== '');
+                ], static fn ($part) => is_string($part) && trim($part) !== '');
 
                 $orcid = isset($author['ORCID']) ? Identity::normalizeOrcid((string)$author['ORCID']) : null;
 
                 $normalized[] = [
-                    'id' => $orcid ? Identity::ns('orcid', $orcid) : null,
-                    'name' => $nameParts !== [] ? implode(' ', $nameParts) : ($author['name'] ?? null),
-                    'orcid' => $orcid,
+                    'id'           => $orcid ? Identity::ns('orcid', $orcid) : null,
+                    'name'         => $nameParts !== [] ? implode(' ', $nameParts) : ($author['name'] ?? null),
+                    'orcid'        => $orcid,
                     'affiliations' => self::extractAffiliations($author['affiliation'] ?? []),
                 ];
             }
