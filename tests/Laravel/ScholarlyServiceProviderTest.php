@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Facade;
 use Scholarly\Adapters\OpenAlex\DataSource as OpenAlexDataSource;
 use Scholarly\Contracts\ScholarlyDataSource;
 use Scholarly\Exporter\Graph\GraphExporter;
 use Scholarly\Factory\AdapterFactory;
+use Scholarly\Laravel\Facades\Scholarly as ScholarlyFacade;
 use Scholarly\Laravel\ScholarlyServiceProvider;
 
 if (!function_exists('config_path')) {
@@ -18,6 +21,7 @@ if (!function_exists('config_path')) {
 }
 
 it('registers Laravel bindings for scholarly services', function (): void {
+    /** @var Application&Container $container */
     $container = new Container();
     $container->instance('config', new Repository([
         'scholarly' => [
@@ -36,6 +40,7 @@ it('registers Laravel bindings for scholarly services', function (): void {
     $provider = new ScholarlyServiceProvider($container);
     $provider->register();
 
+    /** @var AdapterFactory $factory */
     $factory = $container->make(AdapterFactory::class);
 
     expect($factory)->toBeInstanceOf(AdapterFactory::class)
@@ -46,3 +51,33 @@ it('registers Laravel bindings for scholarly services', function (): void {
     $factory->reset();
 });
 
+it('resolves bindings through the scholarly facade', function (): void {
+    /** @var Application&Container $container */
+    $container = new Container();
+    Facade::setFacadeApplication($container);
+
+    $container->instance('config', new Repository([
+        'scholarly' => [
+            'default'   => 'openalex',
+            'http'      => [],
+            'cache'     => ['store' => null],
+            'graph'     => [],
+            'providers' => [
+                'openalex' => ['mailto' => 'team@example.com'],
+                's2'       => ['api_key' => 'secret'],
+                'crossref' => ['mailto' => 'team@example.com'],
+            ],
+        ],
+    ]));
+
+    $provider = new ScholarlyServiceProvider($container);
+    $provider->register();
+
+    expect(ScholarlyFacade::adapter())->toBeInstanceOf(OpenAlexDataSource::class)
+        ->and(ScholarlyFacade::graphExporter())->toBeInstanceOf(GraphExporter::class);
+
+    /** @var AdapterFactory $factory */
+    $factory = $container->make(AdapterFactory::class);
+    $factory->reset();
+    Facade::setFacadeApplication(null);
+});

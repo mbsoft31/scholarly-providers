@@ -38,6 +38,25 @@ it('normalizes S2 author payloads', function () {
         ->and($normalized['counts']['works'])->toBe(42);
 });
 
+it('normalizes S2 work payloads including alternate fields', function (): void {
+    $raw = [
+        'paperId'         => 'W500',
+        'title'           => 'S2 Title',
+        'abstractText'    => 'Fallback abstract',
+        'externalIds'     => ['DOI' => '10.5555/s2', 'ArXiv' => '2101.12345v3'],
+        'publicationVenue'=> ['id' => 'V1', 'name' => 'Venue', 'type' => 'journal'],
+        'openAccessPdf'   => ['url' => 'https://example.com/pdf'],
+        'isOpenAccess'    => true,
+    ];
+
+    $normalized = Normalizer::work($raw, 's2');
+
+    expect($normalized['id'])->toBe('s2:W500')
+        ->and($normalized['abstract'])->toBe('Fallback abstract')
+        ->and($normalized['external_ids']['arxiv'])->toBe('2101.12345')
+        ->and($normalized['venue']['id'])->toBe('s2:V1');
+});
+
 it('normalizes Crossref work payloads', function () {
     $raw = [
         'DOI'    => '10.5555/example',
@@ -53,4 +72,28 @@ it('normalizes Crossref work payloads', function () {
     expect($normalized['id'])->toBe('crossref:10.5555/example')
         ->and($normalized['authors'][0]['orcid'])->toBe('0000-0002-1825-0097')
         ->and($normalized['year'])->toBe(1950);
+});
+
+it('reconstructs abstract text from OpenAlex inverted index', function (): void {
+    $raw = [
+        'id'                     => 'https://openalex.org/W9',
+        'display_name'           => 'Abstract Example',
+        'abstract_inverted_index'=> [
+            'hello' => [0],
+            'world' => [1],
+        ],
+    ];
+
+    $normalized = Normalizer::work($raw, 'openalex');
+
+    expect($normalized['abstract'])->toBe('hello world');
+});
+
+it('falls back to generic work and author normalization', function (): void {
+    $work = Normalizer::work(['id' => '123', 'title' => 'Generic'], 'unknown');
+    $author = Normalizer::author(['name' => 'Unknown'], 'unknown');
+
+    expect($work['id'])->toBe('unknown:123')
+        ->and($work['title'])->toBe('Generic')
+        ->and($author['name'])->toBe('Unknown');
 });

@@ -12,8 +12,14 @@ trait ArxivTrait
 {
     abstract protected function client(): Client;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     abstract protected function fetchWorkByArxiv(string $normalizedId): ?array;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getWorkByArxiv(string $arxivId): ?array
     {
         $normalized = Identity::normalizeArxiv($arxivId);

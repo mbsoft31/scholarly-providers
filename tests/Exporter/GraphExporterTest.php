@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use Psr\Log\NullLogger;
 use Scholarly\Contracts\Paginator;
 use Scholarly\Contracts\Query;
 use Scholarly\Contracts\ScholarlyDataSource;
 use Scholarly\Exporter\Graph\GraphExporter;
+use Scholarly\Core\CacheLayer;
 
 final readonly class ArrayPaginatorStub implements Paginator
 {
@@ -30,6 +32,78 @@ final readonly class ArrayPaginatorStub implements Paginator
         foreach ($this->items as $item) {
             yield $item;
         }
+    }
+}
+
+final class MemoryCache implements \Psr\SimpleCache\CacheInterface
+{
+    /** @var array<string, mixed> */
+    private array $store = [];
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->store[$key] ?? $default;
+    }
+
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    {
+        $this->store[$key] = $value;
+
+        return true;
+    }
+
+    public function delete(string $key): bool
+    {
+        unset($this->store[$key]);
+
+        return true;
+    }
+
+    public function clear(): bool
+    {
+        $this->store = [];
+
+        return true;
+    }
+
+    /**
+     * @param iterable<string> $keys
+     * @return iterable<string, mixed>
+     */
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
+    {
+        foreach ($keys as $key) {
+            yield (string) $key => $this->get((string) $key, $default);
+        }
+    }
+
+    /**
+     * @param iterable<string, mixed> $values
+     */
+    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+    {
+        foreach ($values as $key => $value) {
+            $this->set((string) $key, $value, $ttl);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param iterable<string> $keys
+     */
+    public function deleteMultiple(iterable $keys): bool
+    {
+        foreach ($keys as $key) {
+            $this->delete((string) $key);
+        }
+
+        return true;
+    }
+
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->store);
     }
 }
 
@@ -154,6 +228,102 @@ final readonly class FakeDataSource implements ScholarlyDataSource
     }
 }
 
+final class CountingDataSource implements ScholarlyDataSource
+{
+    public int $referenceCalls = 0;
+    public int $citationCalls  = 0;
+
+    /**
+     * @param array<string, array<string, mixed>>       $works
+     * @param array<string, list<array<string, mixed>>> $references
+     * @param array<string, list<array<string, mixed>>> $citations
+     */
+    public function __construct(
+        private array $works,
+        private array $references,
+        private array $citations,
+    ) {
+    }
+
+    public function searchWorks(Query $query): Paginator
+    {
+        return new ArrayPaginatorStub(array_values($this->works));
+    }
+
+    public function getWorkById(string $id): ?array
+    {
+        return $this->works[$id] ?? null;
+    }
+
+    public function getWorkByDoi(string $doi): ?array
+    {
+        return null;
+    }
+
+    public function getWorkByArxiv(string $arxivId): ?array
+    {
+        return null;
+    }
+
+    public function getWorkByPubmed(string $pmid): ?array
+    {
+        return null;
+    }
+
+    public function listCitations(string $id, Query $query): Paginator
+    {
+        $this->citationCalls++;
+
+        return new ArrayPaginatorStub($this->citations[$id] ?? []);
+    }
+
+    public function listReferences(string $id, Query $query): Paginator
+    {
+        $this->referenceCalls++;
+
+        return new ArrayPaginatorStub($this->references[$id] ?? []);
+    }
+
+    public function batchWorksByIds(iterable $ids, Query $query): iterable
+    {
+        foreach ($ids as $id) {
+            if (isset($this->works[$id])) {
+                yield $this->works[$id];
+            }
+        }
+    }
+
+    public function searchAuthors(Query $query): Paginator
+    {
+        return new ArrayPaginatorStub([]);
+    }
+
+    public function getAuthorById(string $id): ?array
+    {
+        return null;
+    }
+
+    public function getAuthorByOrcid(string $orcid): ?array
+    {
+        return null;
+    }
+
+    public function batchAuthorsByIds(iterable $ids, Query $query): iterable
+    {
+        return [];
+    }
+
+    public function health(): bool
+    {
+        return true;
+    }
+
+    public function rateLimitState(): array
+    {
+        return [];
+    }
+}
+
 it('builds a citation graph with edges for references and citations', function () {
     $works = [
         'openalex:W1' => [
@@ -227,4 +397,38 @@ it('builds author collaboration graph with weighted edges', function () {
     $edgeAttrs = $graph->edgeAttrs('openalex:A1', 'openalex:A2');
     expect($edgeAttrs['weight'])->toBe(1)
         ->and($edgeAttrs['works'])->toContain('openalex:W1');
+});
+
+it('caches references and citations between runs when cache layer is available', function (): void {
+    $works = [
+        'openalex:W1' => [
+            'id'      => 'openalex:W1',
+            'title'   => 'Cached Work',
+            'authors' => [],
+        ],
+    ];
+
+    $references = [
+        'openalex:W1' => [
+            ['id' => 'openalex:W2', 'title' => 'Ref'],
+        ],
+    ];
+
+    $citations = [
+        'openalex:W1' => [
+            ['id' => 'openalex:W3', 'title' => 'Cit'],
+        ],
+    ];
+
+    $dataSource = new CountingDataSource($works, $references, $citations);
+    $cacheLayer = new CacheLayer(new MemoryCache());
+    $exporter   = new GraphExporter($dataSource, $cacheLayer, new NullLogger());
+
+    $query = Query::from(['limit' => 5]);
+
+    $exporter->buildWorkCitationGraph(['openalex:W1'], $query);
+    $exporter->buildWorkCitationGraph(['openalex:W1'], $query);
+
+    expect($dataSource->referenceCalls)->toBe(1)
+        ->and($dataSource->citationCalls)->toBe(1);
 });

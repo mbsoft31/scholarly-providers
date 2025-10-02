@@ -12,8 +12,14 @@ trait PubmedTrait
 {
     abstract protected function client(): Client;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     abstract protected function fetchWorkByPubmed(string $pmid): ?array;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getWorkByPubmed(string $pmid): ?array
     {
         $normalized = Identity::normalizePmid($pmid);

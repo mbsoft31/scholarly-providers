@@ -26,3 +26,27 @@ it('creates and parses namespaced identifiers', function () {
         ->and(Identity::parseNs($ns))
         ->toMatchArray(['provider' => 'openalex', 'id' => 'W123']);
 });
+
+it('extracts identifiers from nested payloads', function (): void {
+    $payload = [
+        'authors' => [
+            ['ids' => ['orcid' => '0000-0001-2345-6789']],
+            ['ids' => ['orcid' => '0000-0001-2345-6789']],
+        ],
+    ];
+
+    $ids = Identity::extractIds($payload, 'authors.ids.orcid', 'orcid');
+
+    expect($ids)->toBe(['orcid:0000-0001-2345-6789']);
+});
+
+it('normalizes pmid values and builds URLs', function (): void {
+    expect(Identity::normalizePmid('PMID  12345'))->toBe('12345')
+        ->and(Identity::pmidToUrl('12345'))->toBe('https://pubmed.ncbi.nlm.nih.gov/12345/');
+});
+
+it('returns null url when DOI is missing', function (): void {
+    expect(Identity::doiToUrl(''))->toBeNull()
+        ->and(Identity::parseNs('identifier'))
+        ->toMatchArray(['provider' => '', 'id' => 'identifier']);
+});

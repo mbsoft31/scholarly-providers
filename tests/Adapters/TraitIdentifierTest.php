@@ -12,12 +12,18 @@ use Scholarly\Adapters\Traits\PubmedTrait;
 use Scholarly\Core\Backoff;
 use Scholarly\Core\Client;
 use Scholarly\Core\Exceptions\NotFoundException;
+use function PHPUnit\Framework\assertIsArray;
 
 final class ArrayLogger extends AbstractLogger
 {
     /** @var list<array{level: string, message: string, context: array<string, mixed>}> */
     public array $entries = [];
 
+    /**
+     * @param mixed $level
+     * @param string|\Stringable $message
+     * @param array<string, mixed> $context
+     */
     public function log($level, $message, array $context = []): void
     {
         $this->entries[] = [
@@ -53,6 +59,9 @@ abstract class FakeTraitAdapter
     {
     }
 
+    /**
+     * @return array{token: string}
+     */
     protected function respond(string $normalized): array
     {
         $this->lastNormalized = $normalized;
@@ -74,6 +83,9 @@ final class FakeDoiAdapter extends FakeTraitAdapter
 {
     use DoiTrait;
 
+    /**
+     * @return array{token: string}|null
+     */
     protected function fetchWorkByDoi(string $normalizedDoi): ?array
     {
         return $this->respond($normalizedDoi);
@@ -84,6 +96,9 @@ final class FakeArxivAdapter extends FakeTraitAdapter
 {
     use ArxivTrait;
 
+    /**
+     * @return array{token: string}|null
+     */
     protected function fetchWorkByArxiv(string $normalizedId): ?array
     {
         return $this->respond($normalizedId);
@@ -94,6 +109,9 @@ final class FakePubmedAdapter extends FakeTraitAdapter
 {
     use PubmedTrait;
 
+    /**
+     * @return array{token: string}|null
+     */
     protected function fetchWorkByPubmed(string $pmid): ?array
     {
         return $this->respond($pmid);
@@ -104,6 +122,9 @@ final class FakeOrcidAdapter extends FakeTraitAdapter
 {
     use OrcidTrait;
 
+    /**
+     * @return array{token: string}|null
+     */
     protected function fetchAuthorByOrcid(string $normalizedOrcid): ?array
     {
         return $this->respond($normalizedOrcid);
@@ -115,6 +136,7 @@ it('normalizes DOI values before fetching', function (): void {
     $adapter = new FakeDoiAdapter($client);
 
     $result = $adapter->getWorkByDoi('https://doi.org/10.1000/XYZ');
+    assertIsArray($result);
 
     expect($adapter->lastNormalized)->toBe('10.1000/xyz')
         ->and($result['token'])->toBe('10.1000/xyz');
@@ -148,6 +170,7 @@ it('normalizes arXiv identifiers', function (): void {
     $adapter = new FakeArxivAdapter($client);
 
     $result = $adapter->getWorkByArxiv('arXiv:2101.12345v2');
+    assertIsArray($result);
 
     expect($adapter->lastNormalized)->toBe('2101.12345')
         ->and($result['token'])->toBe('2101.12345');
@@ -173,6 +196,7 @@ it('normalizes PubMed identifiers', function (): void {
     $adapter = new FakePubmedAdapter($client);
 
     $result = $adapter->getWorkByPubmed('PMID: 123456');
+    assertIsArray($result);
 
     expect($adapter->lastNormalized)->toBe('123456')
         ->and($result['token'])->toBe('123456');
@@ -198,6 +222,7 @@ it('normalizes ORCID identifiers', function (): void {
     $adapter = new FakeOrcidAdapter($client);
 
     $result = $adapter->getAuthorByOrcid('https://orcid.org/0000-0001-2345-6789');
+    assertIsArray($result);
 
     expect($adapter->lastNormalized)->toBe('0000-0001-2345-6789')
         ->and($result['token'])->toBe('0000-0001-2345-6789');
@@ -217,4 +242,3 @@ it('logs when ORCID lookup misses', function (): void {
             'context' => ['orcid' => '0000-0001-2345-6789'],
         ]);
 });
-

@@ -12,8 +12,14 @@ trait OrcidTrait
 {
     abstract protected function client(): Client;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     abstract protected function fetchAuthorByOrcid(string $normalizedOrcid): ?array;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAuthorByOrcid(string $orcid): ?array
     {
         $normalized = Identity::normalizeOrcid($orcid);

@@ -14,9 +14,14 @@ trait DoiTrait
 
     /**
      * Perform the provider specific DOI lookup.
+     *
+     * @return array<string, mixed>|null
      */
     abstract protected function fetchWorkByDoi(string $normalizedDoi): ?array;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getWorkByDoi(string $doi): ?array
     {
         $normalized = Identity::normalizeDoi($doi);
