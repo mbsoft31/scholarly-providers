@@ -135,6 +135,17 @@ composer cs-check
 
 Fixtures for provider responses live under `tests/Fixtures/`. Guard any live API tests with `SCHOLARLY_LIVE_TESTS=1`.
 
+## 📚 Documentation
+
+- Start here: `docs/index.md`
+- Quick start guide: `docs/getting-started.md`
+- Contracts reference: `docs/contracts.md`
+- Graphs & algorithms: `docs/graph.md`
+- Adapters: `docs/adapters/openalex.md`, `docs/adapters/s2.md`, `docs/adapters/crossref.md`
+- Extending: `docs/extending.md`
+
+Hosted docs (GitHub Pages): https://mbsoft31.github.io/scholarly-providers/
+
 ## 🎯 Use Cases
 
 - Research discovery and enrichment workflows

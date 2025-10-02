@@ -1,3 +1,9 @@
+---
+layout: default
+title: Laravel Integration
+nav_order: 8
+---
+
 # Laravel Integration
 
 Scholarly Providers ships with a first-class Laravel bridge that registers adapters, configures caching, and exposes a facade for quick access.

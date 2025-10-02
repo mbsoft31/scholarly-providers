@@ -1,3 +1,9 @@
+---
+layout: default
+title: Provider Capabilities
+nav_order: 5
+---
+
 # Provider Capabilities
 
 Deep dives for each adapter live under `docs/adapters/`:

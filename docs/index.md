@@ -1,3 +1,9 @@
+---
+layout: default
+title: Scholarly Providers
+nav_order: 1
+---
+
 # Scholarly Providers Documentation
 
 Build reliable scholarly features without juggling raw HTTP for OpenAlex, Semantic Scholar (S2), and Crossref. This package unifies provider contracts, normalizes payloads, adds retries + caching, and exports rich graphs ready for analysis or visualization.
@@ -10,4 +16,3 @@ Build reliable scholarly features without juggling raw HTTP for OpenAlex, Semant
 - Laravel: framework integration, config, and facade → laravel.md
 
 If you are new, start with getting-started.md, then skim contracts.md and graph.md.
-

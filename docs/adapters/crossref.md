@@ -1,3 +1,10 @@
+---
+layout: default
+title: Crossref Adapter
+parent: Adapters
+nav_order: 3
+---
+
 # Crossref Adapter
 
 Implements `ScholarlyDataSource` for Crossref’s REST API. Cursor pagination for `/works`, and DOI-based lookups.
@@ -31,4 +38,3 @@ Configuration
 
 Notes
 - Crossref does not support author batch endpoints; the adapter no-ops unsupported features gracefully.
-

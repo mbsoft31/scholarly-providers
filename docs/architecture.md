@@ -1,3 +1,9 @@
+---
+layout: default
+title: Architecture
+nav_order: 6
+---
+
 # Architecture Overview
 
 Scholarly Providers is organised into layered modules that build on shared contracts:

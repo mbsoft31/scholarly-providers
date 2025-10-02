@@ -1,3 +1,9 @@
+---
+layout: default
+title: Contracts
+nav_order: 3
+---
+
 # Contracts Reference
 
 This package is contract-first. Implementations (adapters) and higher-level features (graphs) speak the same language.
@@ -99,4 +105,3 @@ Normalized shapes (typical)
 
 Exceptions
 - Adapters throw specialized exceptions under `Scholarly\Core\Exceptions` (e.g., `NotFoundException`, `RateLimitException`, `ClientException`).
-

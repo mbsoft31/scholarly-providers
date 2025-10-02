@@ -1,0 +1,15 @@
+title: Scholarly Providers
+description: Unified SDK for OpenAlex, Semantic Scholar, and Crossref with graph export
+theme: minima
+markdown: kramdown
+highlighter: rouge
+exclude:
+  - vendor
+  - node_modules
+  - Gemfile
+  - Gemfile.lock
+  - composer.lock
+  - phpunit.xml
+baseurl: "/scholarly-providers"
+url: "https://mbsoft31.github.io"
+

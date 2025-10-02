@@ -1,3 +1,10 @@
+---
+layout: default
+title: OpenAlex Adapter
+parent: Adapters
+nav_order: 1
+---
+
 # OpenAlex Adapter
 
 The OpenAlex adapter implements `ScholarlyDataSource` over the OpenAlex REST API with cursor pagination and rich normalization.
@@ -48,4 +55,3 @@ Configuration
 Notes
 - Abstracts are reconstructed from the inverted index if present.
 - Venue, counts, and external IDs are normalized to consistent keys.
-

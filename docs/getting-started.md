@@ -1,3 +1,9 @@
+---
+layout: default
+title: Getting Started
+nav_order: 2
+---
+
 # Getting Started
 
 This guide shows how to search works and authors, fetch citations/references, and build graphs – without hand-rolling HTTP, pagination, and normalization for each provider.
@@ -44,4 +50,3 @@ Next steps
 - Learn graph export and algorithms: graph.md
 - See provider specifics and limits: adapters/
 - Add your own provider: extending.md
-

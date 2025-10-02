@@ -1,3 +1,9 @@
+---
+layout: default
+title: Extending / Build Adapters
+nav_order: 7
+---
+
 # Extending: Build Your Own Adapter
 
 Adapters map `ScholarlyDataSource` to a concrete provider. Follow this step-by-step to add a new provider with reliable HTTP, pagination, and normalization.
@@ -112,4 +118,3 @@ Tips
 - Reuse traits in `src/Adapters/Traits` for DOI/arXiv/PMID/ORCID lookups.
 - Consider adding health checks using a lightweight, cacheable endpoint.
 - Normalize aggressively; it pays off when exporting graphs or mixing providers.
-

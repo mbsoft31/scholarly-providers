@@ -1,3 +1,9 @@
+---
+layout: default
+title: Graphs & Algorithms
+nav_order: 4
+---
+
 # Graphs & Algorithms
 
 Turn search results and identifiers into rich knowledge graphs, then export or analyze with mbsoft graph packages.
@@ -62,4 +68,3 @@ arsort($scores); // top influential works
 Progress & throttling
 - `GraphExporter` accepts an optional progress callback `(index, total|null, id, meta)`.
 - It respects polite rate limiting (sleep when needed) and honors `Retry-After` via the core client.
-
