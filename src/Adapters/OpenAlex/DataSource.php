@@ -58,7 +58,10 @@ final class DataSource implements ScholarlyDataSource
         private readonly ?string $mailto = null,
         private readonly int     $maxPerPage = 200,
     ) {
-        $userAgent = 'ScholarlyClient/1.0';
+        // Create a proper User-Agent that OpenAlex accepts
+        $userAgent = $this->mailto !== null && trim($this->mailto) !== ''
+            ? sprintf('ScholarlyProviders/1.0 (https://github.com/mbsoft31/scholarly-providers; mailto:%s)', trim($this->mailto))
+            : 'ScholarlyProviders/1.0 (https://github.com/mbsoft31/scholarly-providers)';
 
         $this->defaultHeaders = [
             'Accept'     => 'application/json',
@@ -68,8 +71,7 @@ final class DataSource implements ScholarlyDataSource
         $this->defaultQuery = [];
 
         if ($this->mailto !== null && trim($this->mailto) !== '') {
-            $this->defaultQuery['mailto']       = trim($this->mailto);
-            $this->defaultHeaders['User-Agent'] = sprintf('%s (mailto:%s)', $userAgent, $this->mailto);
+            $this->defaultQuery['mailto'] = trim($this->mailto);
         }
     }
 

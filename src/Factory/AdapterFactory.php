@@ -176,7 +176,13 @@ final class AdapterFactory
             }
 
             if ($httpConfig->userAgent !== null) {
+                // Ensure User-Agent is properly set and takes precedence
                 $request = $request->withHeader('User-Agent', $httpConfig->userAgent);
+            }
+
+            // Ensure proper Accept header
+            if (!$request->hasHeader('Accept')) {
+                $request = $request->withHeader('Accept', 'application/json');
             }
 
             return $request;
