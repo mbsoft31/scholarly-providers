@@ -431,7 +431,7 @@ final class DataSource implements ScholarlyDataSource
         $map = [
             'id'               => ['id'],
             'title'            => ['display_name'],
-            'abstract'         => ['abstract', 'abstract_inverted_index'],
+            'abstract'         => ['abstract_inverted_index'], // ✅ Fixed: Only use abstract_inverted_index
             'year'             => ['publication_year'],
             'publication_date' => ['publication_date'],
             'venue'            => ['host_venue', 'primary_location'],
